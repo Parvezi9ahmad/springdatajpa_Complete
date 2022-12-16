@@ -4,34 +4,30 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.annotation.Generated;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@ToString
 @Table(name = "products", schema = "ecommerce", uniqueConstraints = {
 		@UniqueConstraint(name = "sku_unique", columnNames = "stock_keeping_unit") })
 public class Product {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,
+	generator="product_generator"
+	)
+	@SequenceGenerator(
+			name="product_generator",
+			sequenceName ="product_sequence_name"
+	)
 	private Long id;
 
 	@Column(name = "stock_keeping_unit", nullable = false)
