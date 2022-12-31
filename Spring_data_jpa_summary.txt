@@ -1,0 +1,400 @@
+//by using @table annotation you can change the tablename,constraint name and make a particular column unique by using @uniqueConsytraint annotation
+@Table(name="products",schema="ecommerce",
+uniqueConstraints= {
+		@UniqueConstraint(
+				name="sku_unique",
+				columnNames="stock_keeping_unit"
+				)
+}
+		)
+
+//by using this annotation we can make particular column not null
+@Column(name="stock_keeping_unit",nullable=false)
+
+//these annotations are used for date expl current date updated date
+@CreationTimestamp
+@UpdateTimestamp
+
+//jparepository interface extends with these interfaces ->pagingandsorting interface ->crudrepository interface ->repository interface
+//simplejparepository class implements jpa repository interface
+//jparepositoryimplementation interface extends jprepository interface
+
+
+
+For testing jparepository create test case and annotate the class with @springboottest and autowired the repository interface(jparepository) in the 
+//annotate @tostring at entity class
+
+//save and update method usng junit
+@SpringBootTest
+class ProductRepositoryTest {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+  //sacing single object
+    @Test
+    public void save(){
+        //create product
+        Product product=new Product();
+        product.setName("product1");
+        product.setDescription("product 1 desciption");
+        product.setSku("100ABC");
+        product.setPrice(new BigDecimal(100));
+        product.setActive(true);
+        product.setImgUrl("product1.png");
+
+        //save product
+         Product savedObject = productRepository.save(product);
+        //display product info
+        System.out.println(savedObject.getId());
+        System.out.println(savedObject.toString());
+    }
+
+  //Updating single object,first need get object using find byid method after update the object 
+    @Test
+    void updateusingsavemethod(){
+        //find product
+        Long id=1L;
+         Product product = productRepository.findById(id).get();
+
+         //update product
+        product.setName("updated product 2");
+        product.setDescription("updated product2 description");
+
+        //save product
+        productRepository.save(product);
+    }
+
+    //save all object using saveall wmtho that accepts list of objects
+
+      @Test
+    void saveAllMethod(){
+
+        //first object
+        Product product=new Product();
+        product.setName("product 2");
+        product.setDescription("product 2 description");
+        product.setSku("100ABCD");
+        product.setPrice(new BigDecimal(200));
+        product.setActive(true);
+        product.setImgUrl("product 2 imp.png");
+
+        //second object
+        Product prooduct3=new Product();
+        prooduct3.setName("product 3");
+        prooduct3.setDescription("product 3 description");
+        prooduct3.setSku("100ABCDE");
+        prooduct3.setPrice(new BigDecimal(300));
+        prooduct3.setActive(true);
+        prooduct3.setImgUrl("product 3 img.png");
+        List<Product> list=new ArrayList<>();
+        list.add(product);
+        list.add(prooduct3);
+        productRepository.saveAll(list);
+        or
+        productRepository.saveAll(List.of(product,prooduct3));
+    }
+
+     //findall method return list of object from the jparepository
+     //iterate list of object in foreach loop after 
+        @Test
+    void findAllMethod(){
+         List<Product> all = productRepository.findAll();
+         all.forEach((p)->{
+             System.out.println(p.getName());
+         });
+    }
+
+
+    //delet the object by using id
+    //it accepts input as an Id and delete the object
+    @Test
+    void deleteByIdmethod(){
+        Long id=1L;
+        productRepository.deleteById(id);
+    }
+
+
+   //delete the object by using entity object(it takes entity as an parameter)
+   //first find the entity by suing the id after pass the entity object to delete method.
+    @Test
+    void deleteMethod(){
+        Long id=2L;
+        Product product = productRepository.findById(id).get();
+        productRepository.delete(product);
+    }
+
+
+   DeleteALL()
+   //this method delete all the entity from the data base
+   //it does not take any input
+   @Test
+    void deleteALlMethod(){
+        productRepository.deleteAll();
+    }
+
+    ExistByID(Long id)
+    //this method accepts input as an id and return boolean true or false
+    @Test
+    void existByIdMethod(){
+        Long id=202L;
+        boolean b = productRepository.existsById(id);
+        System.out.println(b);
+    }
+
+
+Querymethod_pdf6
+//write this method inside functionl interface
+public Product findByName(String name);
+
+
+@SpringBootTest
+public class Querymethodest {
+
+    @Autowired
+    ProductRepository productRepository;
+
+//call finadbyname method from repository interface will get product object.
+    @Test
+    void findBynametest(){
+         Product byName = productRepository.findByName("product 3");
+        System.out.println(byName.getName());
+        System.out.println(byName.getId());
+        System.out.println(byName.getDescription());
+    }
+
+
+ //write this method inside the repository interface
+  Optional<Product> findById(Long id);
+
+
+//call the findById method using repository interface and pass as an id and it will return option<Product> object.  
+    @Test
+    void findByidMethod(){
+         Product product = productRepository.findById(202L).get();
+        System.out.println(product.getName());
+    }
+
+
+
+  //write this querymethod inside repository interface
+  //it will return list of product and will take product name and description as an parameter
+  //if no product is found then it will return empty list.
+   List<Product> findByNameOrDescription(String name, String description);
+
+
+     //call from repository will get list of product iterate each product in for each loop.
+    @Test
+    void findByNameOrDescriptionMethod(){
+         List<Product> products = productRepository.findByNameOrDescription("product 1", "product 1 description");
+         products.forEach(p->{
+             System.out.println(p.getId());
+             System.out.println(p.getName());
+         });
+    }
+
+    //same as findbynameordescription
+  List<Product> findByNameAndDescription(String name,String description);
+
+
+  //inside repository interface write this query method
+  Product findDistinctByName(String name);
+
+//use distinct keyword before by and reamining are same
+   @Test
+    void findDistinctByNameMethod(){
+         Product product = productRepository.findDistinctByName("product 2");
+        System.out.println(product.getId());
+        System.out.println(product.getName());
+        System.out.println(product.getDescription());
+    }
+
+
+ //product price greater than enter price
+ List<Product> findByPriceGreaterThan(BigDecimal price);
+
+ @Test
+    void findBypriceGreaterThanMethod(){
+        List<Product> products = productRepository.findByPriceGreaterThan(new BigDecimal(200));
+        products.forEach(p->{
+            System.out.println(p.getId());
+        });
+    }
+
+
+//product price less than enter price
+   List<Product> findByPriceLessThan(BigDecimal price);
+
+   @Test
+    void findByPriceLessThanMethod(){
+        List<Product> products = productRepository.findByPriceLessThan(new BigDecimal(200));
+        products.forEach(p->{
+            System.out.println(p.getId());
+            System.out.println(p.getName());
+        });
+
+
+//retrive filterd product that match the given text example Like
+
+ List<Product> findByNameContaining(String name);
+
+  @Test
+    void findnameContainingMethod(){
+         List<Product> product = productRepository.findByNameContaining("product 1");
+         product.forEach(p->{
+             System.out.println(p.getId());
+             System.out.println(p.getName());
+         });
+    }
+
+
+//similar to containing like example
+List<Product> findByNameLike(String name);
+
+ @Test
+    void findBynameLikemethod(){
+         List<Product> product = productRepository.findByNameLike("product 1");
+         product.forEach(p->{
+             System.out.println(p.getId());
+             System.out.println(p.getName());
+         });
+    }
+
+
+ //write a query method to find or retirve products based on the price range (start and end)
+ // use between after ByPrice
+
+List<Product> findByPriceBetween(BigDecimal startPrice,BigDecimal endPrice);
+
+  @Test
+    void findBypriceBetweenMethod(){
+         List<Product> products = productRepository.findByPriceBetween(new BigDecimal(200), new BigDecimal(300));
+         products.forEach(p->{
+             System.out.println(p.getId());
+             System.out.println(p.getName());
+             System.out.println(p.getPrice());
+         });
+    }
+
+
+//similar example for date between start and end date
+List<Product> findByDateCreatedBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+ @Test
+    void findDateCreatedBetweenMethod(){
+        LocalDateTime start = LocalDateTime.of(2022, 12, 22, 14, 5, 22);
+         LocalDateTime end = LocalDateTime.of(2022, 12, 22, 14, 8, 37);
+         List<Product> products = productRepository.findByDateCreatedBetween(start, end);
+         products.forEach(p->{
+             System.out.println(p.getId());
+             System.out.println(p.getName());
+         });
+    }
+
+
+ //use of in to find particular values 
+   List<Product> findByNameIn(List<String> names);
+
+  @Test
+    void findByNameInMethod(){
+         List<Product> products = productRepository.findByNameIn(List.of("product 1", "product 3"));
+         products.forEach(p->{
+             System.out.println(p.getId());
+             System.out.println(p.getName());
+         });
+    }
+
+ //Limiting Query results(first and top) it can be use before the by and we can also used other things after by
+ //it does not require any parameter
+ //top and first can be consider same
+
+  List<Product> findTop2ByPriceBetween(BigDecimal startPrice,BigDecimal endPrice);
+
+  @Test
+    void findFirstOrderBynameMethod(){
+       List<Product> products = productRepository.findFirst2ByOrderByName();
+       products.forEach(p->{
+           System.out.println(p.getId());
+           System.out.println(p.getName());
+       });
+
+    }
+
+   //same example
+   List<Product> findTop3ByOrderByPriceDesc();
+   @Test
+    void findop3ByOrderBymethod(){
+        List<Product> products = productRepository.findTop3ByOrderByPriceDesc();
+        products.forEach(p->{
+            System.out.println(p.getId());
+            System.out.println(p.getPrice());
+        });
+    }
+
+
+ pdf-7
+//Jpql nad native sql
+//using jpql index parameter 
+//write inside repository interface
+//we can write any methodnameit with name or different parametr as well it willl not affect
+//@query nad method return type should be same otherwise it will throw exception
+//jpql used entity name inside @query
+//parameters provided to the jpql or sql should be unqiue for single object otherwise it will give error
+//using sql and jpql we can get list<object>,single object and stringor integer as the return value as well
+ @Query("SELECT p from Product p where p.name=?1 or p.description=?2")
+   Product findByNameOrDescriptionJpqlIndexParam(String name,String description);
+
+
+ @SpringBootTest
+public class JpqlQueryTest {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Test
+    void findBynameOrDescriptionJpqlIndexParamMethod(){
+         Product product = productRepository.findByNameOrDescriptionJpqlI("product 2", "product 2 description");
+        System.out.println(product.getId());
+        System.out.println(product.getName());
+    }
+
+//using jpqlnamedparameter method
+//write inside repository interface
+//we can write any methodnameit with name or different parametr as well it willl not affect
+ @Query("SELECT p from Product p where p.name=:name or p.description=:description")
+   Product findByNameOrDescriptionJpqlNameParam(@Param("name") String name,@Param("description") String description);
+
+ @Test
+    void findByNameOrDescriptionJpqlNamedParamMethod(){
+        Product product = productRepository.findByNameOrDescriptionJpqlNameParam("product 2", "product 2 description");
+        System.out.println(product.getId());
+        System.out.println(product.getName());
+    }
+
+
+//creating native sql queries
+//Inside @Query write value and put nativeQuery flag as true 
+//using sql index parametr
+
+ @Query(value = "select * from products p where p.name=?1 or p.description=?2",nativeQuery = true)
+    Product findByNameOrDescriptionSqlIndexParam(String name,String description);
+
+ @Test
+    void findBynameOrDescriptionSqlIndexParamMethod(){
+         Product product= productRepository.findByNameOrDescriptionSqlIndexParam("product 2", "product 2 description");
+        System.out.println(product.getId());
+        System.out.println(product.getName());
+    }
+
+//sqlnamedParameter as sqlindexparameter but littl difference
+
+  @Query(value = "select * from Products p where p.name=:name or p.description=:description",nativeQuery = true)
+    Product findByNameOrDescriptionSqlNamedParam(String name,String description);
+
+     @Test
+    void findBynameOrDescriptionSqlNamedParamMethod(){
+         Product product = productRepository.findByNameOrDescriptionSqlNamedParam("product 2", "product 2 description");
+        System.out.println(product.getId());
+        System.out.println(product.getName());
+        System.out.println(product.getDescription());
+    }
