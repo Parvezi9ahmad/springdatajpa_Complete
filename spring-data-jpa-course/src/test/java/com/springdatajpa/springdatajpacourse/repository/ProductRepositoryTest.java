@@ -24,9 +24,9 @@ class ProductRepositoryTest {
     public void save(){
         //create product
         Product product=new Product();
-        product.setName("product1");
+        product.setName("product 1");
         product.setDescription("product 1 desciption");
-        product.setSku("100ABC");
+        product.setSku("500ABCD");
         product.setPrice(new BigDecimal(100));
         product.setActive(true);
         product.setImgUrl("product1.png");
@@ -50,16 +50,16 @@ class ProductRepositoryTest {
 
         //save product
         productRepository.save(product);
+
     }
 
     @Test
     void saveAllMethod(){
-
         //first object
         Product product=new Product();
         product.setName("product 2");
         product.setDescription("product 2 description");
-        product.setSku("100ABCD");
+        product.setSku("200ABCD");
         product.setPrice(new BigDecimal(200));
         product.setActive(true);
         product.setImgUrl("product 2 imp.png");
@@ -76,6 +76,7 @@ class ProductRepositoryTest {
         list.add(product);
         list.add(prooduct3);
         productRepository.saveAll(List.of(product,prooduct3));
+
     }
 
     @Test
