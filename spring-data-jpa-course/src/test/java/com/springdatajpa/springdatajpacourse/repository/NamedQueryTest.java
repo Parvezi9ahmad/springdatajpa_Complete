@@ -14,16 +14,16 @@ public class NamedQueryTest {
     private ProductRepository productRepository;
 
     @Test
-    void findByPriceTest(){
-         Product product = productRepository.findByPrice(new BigDecimal(200));
+    void findByPriceTest() {
+        Product product = productRepository.findByPrice(new BigDecimal(200));
         System.out.println(product.getId());
         System.out.println(product.getName());
     }
 
     @Test
-    void namedJpqlQueries(){
+    void namedJpqlQueries() {
         List<Product> product = productRepository.findAllOrderByNameDesc();
-        product.forEach(p->{
+        product.forEach(p -> {
             System.out.println(p.getId());
             System.out.println(p.getName());
 
@@ -35,7 +35,7 @@ public class NamedQueryTest {
     }
 
     @Test
-    void namedNativeSqlQuery(){
+    void namedNativeSqlQuery() {
         Product product = productRepository.findByDescription("product 3 description");
         System.out.println(product.getId());
         System.out.println(product.getName());
@@ -43,14 +43,14 @@ public class NamedQueryTest {
     }
 
     @Test
-    void namedNativeQueries(){
-      List<Product> product = productRepository.findAllOrderByNameAsc();
-      product.forEach(p->{
-          System.out.println(p.getId());
-          System.out.println(p.getName());
-      });
+    void namedNativeQueries() {
+        List<Product> product = productRepository.findAllOrderByNameAsc();
+        product.forEach(p -> {
+            System.out.println(p.getId());
+            System.out.println(p.getName());
+        });
 
-         Product product1 = productRepository.findByDescription("product 3 description");
+        Product product1 = productRepository.findByDescription("product 3 description");
         System.out.println(product1.getId());
         System.out.println(product1.getName());
     }

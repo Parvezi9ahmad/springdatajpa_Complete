@@ -11,14 +11,15 @@ public class NativeSqlQuerytest {
     private ProductRepository productRepository;
 
     @Test
-    void findBynameOrDescriptionSqlIndexParamMethod(){
-        Product product= productRepository.findByNameOrDescriptionSqlIndexParam("product 2", "product 2 description");
+    void findBynameOrDescriptionSqlIndexParamMethod() {
+        Product product = productRepository.findByNameOrDescriptionSqlIndexParam("product 2", "product 2 description");
         System.out.println(product.getId());
         System.out.println(product.getName());
     }
+
     @Test
-    void findBynameOrDescriptionSqlNamedParamMethod(){
-         Product product = productRepository.findByNameOrDescriptionSqlNamedParam("product 2", "product 2 description");
+    void findBynameOrDescriptionSqlNamedParamMethod() {
+        Product product = productRepository.findByNameOrDescriptionSqlNamedParam("product 2", "product 2 description");
         System.out.println(product.getId());
         System.out.println(product.getName());
         System.out.println(product.getDescription());
